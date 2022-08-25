@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"command": "${workspaceFolder}\\tasks.bat",
+			"label": "tasks.bat",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": { "showReuseMessage": false }
+		}
+	]
+}
