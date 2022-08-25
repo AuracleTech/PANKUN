@@ -1,19 +1,15 @@
 mov ah, 0x0e
-mov al, 65 ; Print A
-int 0x10
+mov al, 65 ; set al as 65 which is A
 
-inc al ; Increment A to B
-int 0x10
+loop:
+    int 0x10
+    inc al ; Increment al by 1
+    cmp al, 'Z' + 1 ; If al is greater than Z then exit the loop
+    je exit
+    jmp loop
 
-inc al ; Increment B to C
-int 0x10
-
-inc al ; Increment C to D
-int 0x10
-
-inc al ; Increment D to E
-int 0x10
-jmp $
+exit:
+    jmp $
 
 times 510-($-$$) db 0
 db 0x55, 0xaa
