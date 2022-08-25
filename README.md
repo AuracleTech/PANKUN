@@ -1,5 +1,5 @@
 #### boot.asm
 
-Print H using Teletype mode 5 times in different values.
+Print ABCDE using increments in Teletype mode.
 
 Compiles to a flat binary that's exactly 512 bytes long

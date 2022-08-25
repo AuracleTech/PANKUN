@@ -1,21 +1,17 @@
 mov ah, 0x0e
-mov al, 'H' ; ascii
+mov al, 65 ; Print A
 int 0x10
 
-mov ah, 0x0e
-mov al, 0b01001000 ; binary
+inc al ; Increment A to B
 int 0x10
 
-mov ah, 0x0e
-mov al, 0x48 ; hexadecimal
+inc al ; Increment B to C
 int 0x10
 
-mov ah, 0x0e
-mov al, 72 ; decimal
+inc al ; Increment C to D
 int 0x10
 
-mov ah, 0x0e
-mov al, 0o110 ; octal
+inc al ; Increment D to E
 int 0x10
 jmp $
 
