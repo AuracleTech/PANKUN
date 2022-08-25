@@ -1,6 +1,22 @@
-mov ah, 0x0e ; switch to Teletype mode
-mov al, 'H' ; print H
-int 0x10 ; BIOS interrupt
+mov ah, 0x0e
+mov al, 'H' ; ascii
+int 0x10
+
+mov ah, 0x0e
+mov al, 0b01001000 ; binary
+int 0x10
+
+mov ah, 0x0e
+mov al, 0x48 ; hexadecimal
+int 0x10
+
+mov ah, 0x0e
+mov al, 72 ; decimal
+int 0x10
+
+mov ah, 0x0e
+mov al, 0o110 ; octal
+int 0x10
 jmp $
 
 times 510-($-$$) db 0
