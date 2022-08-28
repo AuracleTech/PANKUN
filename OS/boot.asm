@@ -1,23 +1,16 @@
-[org 0x7c00] ; The BIOS sets the origin of the bootloader to 0x7c00
-mov ah, 0x0e
-; variable name is a pointer to the beginning of the variable
-; so in order to get the first character we need to dereference the pointer
-; this can be done using square brackets
-mov bx, motivational_text
+[org 0x7c00]
 
-print_string:
-    mov al, [bx]
-    cmp al, 0
-    je exit
-    int 0x10
-    inc bx
-    jmp print_string
+char:
+	cmp bx, 10 ; Compare the amount of character printed to 10
+	je exit ; If amount of chars printed is equal to 10, exit
+	mov ah, 0 ; Initialize ah to 0
+	int 0x16 ; BIOS interrupt keyboard input function
+	mov ah, 0x0e ; call BIOS interrupt
+	int 0x10 ; BIOS interrupt print char
+	inc bx ; Increase the amount of chars printed
+	jmp char ; Recursive call
 
 exit:
-    jmp $
-
-motivational_text:
-    db "Please do not crash", 0
-
+	jmp $
 times 510-($-$$) db 0
 db 0x55, 0xaa

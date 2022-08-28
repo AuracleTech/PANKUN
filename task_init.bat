@@ -1,0 +1,1 @@
+mkdir bin 2>nul
