@@ -1,5 +1,3 @@
-#### boot.asm
-
-Display up to 10 characters typed.
+Initialize a stack with A and B, print the stack top value, pop and print again
 
 Compiles to a flat binary that's exactly 512 bytes long

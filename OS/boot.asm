@@ -1,16 +1,26 @@
 [org 0x7c00]
 
-char:
-	cmp bx, 10 ; Compare the amount of character printed to 10
-	je exit ; If amount of chars printed is equal to 10, exit
-	mov ah, 0 ; Initialize ah to 0
-	int 0x16 ; BIOS interrupt keyboard input function
-	mov ah, 0x0e ; call BIOS interrupt
-	int 0x10 ; BIOS interrupt print char
-	inc bx ; Increase the amount of chars printed
-	jmp char ; Recursive call
+; create a stack
+mov bp, 0x8000 ; set the stack base pointer to 0x8000 in memory
+mov sp, bp ; set the stack top to the same location as stack base
+mov bh, 'A' ; enter A into the stack
+push bx ; push the high byte of the stack pointer onto the stack
 
-exit:
+mov bh, 'B' ; enter B into the stack
+call print
+
+pop bx ; pop the high byte of the stack pointer off the stack
+call print
+
+jmp end
+
+print:
+    mov ah, 0x0e
+    mov al, bh
+    int 0x10
+	ret
+
+end:
 	jmp $
-times 510-($-$$) db 0
-db 0x55, 0xaa
+	times 510-($-$$) db 0
+	db 0x55, 0xaa
