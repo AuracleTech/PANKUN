@@ -1,49 +1,39 @@
 @echo off
-color 0E
-cls
-echo ___ INIT
 
-mkdir x 2>nul
+echo _____ WASHING
 
-echo ___ CLEAN
+color 0E && cls
+if exist "obj" rmdir /s /q "obj" 
+if exist "bin" rmdir /s /q "bin"
+if exist "os" rmdir /s /q "os"
+mkdir "obj" 2>nul
+mkdir "bin" 2>nul
+mkdir "os" 2>nul
 
-del /q x\*.*
+echo _____ PREPARATION 
 
-echo ___ BUILD
+nasm "src\boot.asm" -f bin -o "bin\boot.bin"
+if not exist "bin/boot.bin" set err=boot.bin && goto :END
+nasm "src\zeroes.asm" -f bin -o "bin\zeroes.bin"
+if not exist "bin\zeroes.bin" set err=zeroes.bin && goto :END
+nasm "src/kernel_call.asm" -f elf -o "obj/kernel_call.o"
+if not exist "obj/kernel_call.o" set err=kernel_call.o && goto :END
+for %%f in (src\*.c) do (
+    clang "%%f" -ffreestanding -m32 -g -c -target i386-pc-none-elf -o "obj/%%~nf.o"
+    if not exist "obj/%%~nf.o" set err=%%~nf.o && goto :END
+)
 
-nasm "os/boot.asm" -f bin -o "x/boot.bin"
-if not exist "x/boot.bin" set msg="boot.bin" BUILD FAILED && goto :END
+echo _____ COOKING
 
-nasm "os/kernel_call.asm" -f elf -o "x/kernel_call.o"
-if not exist "x/kernel_call.o" set msg="kernel_call.o" BUILD FAILED && goto :END
+ld.lld "obj/*.o" -Ttext 0x1000 --oformat binary -o "bin\kernel.bin"
+if not exist "bin\kernel.bin" set err=kernel.bin && goto :END
+@copy /b "bin\*.bin" "os\PANKUN.bin" >NUL
+if not exist "os\PANKUN.bin" set err=PANKUN.bin && goto :END
 
-clang -ffreestanding -m32 -O2 -g -c "os/kernel.c" -o "x/kernel.o" -target i386-pc-none-elf
-if not exist "x/kernel.o" set msg="kernel.o" BUILD FAILED && goto :END
+echo _____ SERVE
 
-nasm "os/zeroes.asm" -f bin -o "x/zeroes.bin"
-if not exist "x/zeroes.bin" set msg="zeroes.bin" BUILD FAILED && goto :END
+color 0A && qemu-system-x86_64 -m 1G -no-reboot -drive format=raw,file="os\PANKUN.bin",index=0
 
-
-echo ___ LINKING
-
-ld.lld "x/kernel_call.o" "x/kernel.o" -Ttext 0x1000 --oformat binary -o "x/full_kernel.bin"
-if not exist "x\full_kernel.bin" set msg="full_kernel.bin" LINKING FAILED && goto :END
-
-echo ___ CONCATENATING
-
-@copy /b "x\boot.bin" + "x\full_kernel.bin" + "x\zeroes.bin" "x\OS.bin" >NUL
-if not exist "x\OS.bin" set msg="OS.bin" CONCATENATING FAILED && goto :END
-
-echo ___ RUN
-
-qemu-system-x86_64 -drive format=raw,file="x\OS.bin",index=0 -m 1G
-
-color 0A
-
-:END
-    if defined msg (
-        color 0C
-        echo | set /p=FAILED %msg%
-    )
-
+:END 
+    if defined err color 0C && echo FILE FAILED %err%
 exit
