@@ -1,3 +1,1 @@
-From real mode (16 bit) to protected mode (32 bit) then print a char without BIOS interrupts, writing at video memory location
-
-Compiles to a flat binary that's exactly 512 bytes long
+Blank Operating System compiled with Clang/LLVM

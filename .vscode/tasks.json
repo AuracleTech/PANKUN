@@ -3,19 +3,12 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"command": "${workspaceFolder}/task_all.bat",
+			"command": "${workspaceFolder}/tasks.bat",
 			"label": "all",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"presentation": { "showReuseMessage": false }
-		},
-		{
-			"type": "shell",
-			"command": "${workspaceFolder}/task_run.bat",
-			"label": "run",
-			"group": "build",
 			"presentation": { "showReuseMessage": false }
 		}
 	]
